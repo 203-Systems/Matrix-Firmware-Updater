@@ -1,0 +1,34 @@
+﻿<Window x:Class="MatrixFirmwareUpdater.OpenWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MatrixFirmwareUpdater"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525"  >
+    <Grid Margin="30" x:Name="g"  MouseLeftButtonDown="StackPanel_MouseLeftButtonDown">
+            <Canvas>
+                <Rectangle RadiusX="5" RadiusY="5"
+Width="{Binding ElementName=g, Path=ActualWidth}"
+Height="{Binding ElementName=g, Path=ActualHeight}"
+Stroke="Gray" StrokeDashArray="3,3,3,3" StrokeThickness="2"/>
+            </Canvas>
+        <StackPanel Orientation="Vertical"  HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center" Name="spTop">
+                <TextBlock Text="拖拽文件 或 " FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="打开" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" TextDecorations="Underline"/>
+                </StackPanel>
+            <StackPanel Orientation="Vertical" Name="spBottom" Visibility="Collapsed">
+                <TextBlock Text="MatrixOS_0.7.8b.mxfw" FontSize="14" HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" Margin="0,20,0,0" HorizontalAlignment="Center">
+                <Border CornerRadius="3" Padding="15,5,15,5" Background="#3790f9" HorizontalAlignment="Center">
+                        <TextBlock Foreground="White" FontSize="16" Text="安装" PreviewMouseLeftButtonDown="StackPanel_MouseLeftButtonDown2"/>
+                </Border>
+                <Border CornerRadius="3" Padding="15,5,15,5" Background="#2DC84C" HorizontalAlignment="Center" Margin="20,0,0,0">
+                        <TextBlock Foreground="White" FontSize="16" Text="取消" PreviewMouseLeftButtonDown="StackPanel_MouseLeftButtonDown2"/>
+                </Border>
+            </StackPanel>
+            </StackPanel>
+        </StackPanel>
+        </Grid>
+</Window>

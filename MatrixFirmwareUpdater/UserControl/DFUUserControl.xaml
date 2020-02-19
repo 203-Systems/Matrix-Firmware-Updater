@@ -1,0 +1,26 @@
+﻿<local:BaseUserControl x:Class="MatrixFirmwareUpdater.DFUUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MatrixFirmwareUpdater"
+             mc:Ignorable="d" 
+             >
+    <Grid>
+        <StackPanel Margin="140,0,0,30" VerticalAlignment="Center"  HorizontalAlignment="Left" >
+            <TextBlock Text="升级固件中" FontSize="48" HorizontalAlignment="Center"/>
+            <TextBlock Text="请不要断开USB连接线" FontSize="30" Margin="0,30,0,0" HorizontalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Right" Margin="0,0,85,0" VerticalAlignment="Center">
+            <Image Width="320" Name="iRight"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="20" Text="已连接：" Margin="20,30,0,0"/>
+                <TextBlock Name="tbDeviceName" FontSize="20" Text="加载中" Margin="40,30,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="20" Text="固件版本：" Margin="20,20,0,0"/>
+                <TextBlock Name="tbNowVersionName" FontSize="20" Text="加载中" Margin="20,20,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</local:BaseUserControl>
