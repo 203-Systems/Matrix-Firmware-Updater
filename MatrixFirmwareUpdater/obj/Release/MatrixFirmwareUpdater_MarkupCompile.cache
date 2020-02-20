@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-E:\Sharer\MatrixFirmwareUpdater\MatrixFirmwareUpdater\obj\Release\
+C:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\obj\Release\
 MatrixFirmwareUpdater
 none
 false
 TRACE
-E:\Sharer\MatrixFirmwareUpdater\MatrixFirmwareUpdater\App.xaml
-31506440677
+C:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\App.xaml
+61168148422
 
-8-169784535
-17927143920
-OnNotConnectedUserControl.xaml;OpenWindow.xaml;MainWindow.xaml;
+12-275558368
+17-1128523953
+UserControl\ConnectedUserControl.xaml;UserControl\DFUUserControl.xaml;UserControl\ReadyUserControl.xaml;UserControl\NotConnectedUserControl.xaml;OpenWindow.xaml;MainWindow.xaml;
 
 False
 

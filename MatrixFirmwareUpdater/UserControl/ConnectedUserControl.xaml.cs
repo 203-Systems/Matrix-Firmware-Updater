@@ -41,9 +41,7 @@ namespace MatrixFirmwareUpdater
         private bool pullLatestFirmware()
         {
             bool beta = false;
-            const string URL_BETA = "https://api.github.com/repos/203Industries/Matrix/releases/tags/Beta";
-            const string URL_STABLE = "https://api.github.com/repos/203Industries/Matrix/releases/tags/Stable";
-            string json;
+            const string URL = "https://api.github.com/repos/203Industries/Matrix/releases";
             using (var webClient = new System.Net.WebClient())
             {
                 try
@@ -52,22 +50,32 @@ namespace MatrixFirmwareUpdater
 
                     webClient.Headers.Add("User-Agent", "Nothing");
                     webClient.Encoding = Encoding.UTF8;
-                    json = webClient.DownloadString(URL_STABLE);
+                    var json = webClient.DownloadString(URL);
+                    var releases = JsonConvert.DeserializeObject<List<GithubRelease>>(json);
 
-                    if (beta)
+                    foreach (var release in releases)
                     {
-                        webClient.Headers.Add("User-Agent", "Nothing");
-                        webClient.Encoding = Encoding.UTF8;
-                        var json_beta = webClient.DownloadString(URL_BETA);
+                        if (!release.prerelease || beta)
+                        {
+                            //MatrixFWMeta matrixFW = new 
+                            //matrixFW.version = release.name;
+                            String release_type = "Release";
+                            if (release.prerelease)
+                                release_type = "PreRelease";
 
-                        DateTime stableTime = Convert.ToDateTime(Regex.Match(json, "(?<=published_at\":\")(.*?)(Z)").Value);
-                        DateTime betaTime = Convert.ToDateTime(Regex.Match(json_beta, "(?<=published_at\":\")(.*?)(Z)").Value);
-                        //Console.WriteLine(stableTime);
-                        //Console.WriteLine(betaTime);
-                        if (betaTime > stableTime)
-                            json = json_beta;
+                            matrixFW.Version = release.name;
+                            matrixFW.Build_type = release_type;
+                            matrixFW.Publish_time = release.published_at;
+
+                            String body = Regex.Escape(release.body);
+                            matrixFW.Patchnote_zh_CN = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ patchnote_zh_CN\\ -->\\r\\n)(.*?)(?=</details>)").Value);
+                            matrixFW.Patchnote_en = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ patchnote_en\\ -->\\r\\n)(.*?)(?=</details>)").Value);
+                            matrixFW.Supported_devices = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ supported_devices\\ -->\\r\\n)(.*?)(?=</details>)").Value).Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                            matrixFW.File_URL = release.assets[0].browser_download_url;
+                            return true;
+                        }
                     }
-                    fw_link = Regex.Match(json, "(?<=browser_download_url\":\")(.*?)(mxfw)").Value;
+
                 }
                 catch (Exception e)
                 {
@@ -77,18 +85,10 @@ namespace MatrixFirmwareUpdater
                     return false;
                 }
             }
-            json = Regex.Match(json, @"(?<=<buildmeta>\\r\\n)(.*?)(?=\\r\\n</buildmeta>)", RegexOptions.Multiline).Value;
-            json = Regex.Unescape(json);
-            //Matrix Build Meta
-            buildmeta = JsonConvert.DeserializeObject<MatrixFWMeta>(json);
-
-            if (buildmeta != null) {
-                SetMatrixFWMetaData(tbVersion, tbPatchnote);
-            }
-            return true;
+            return false;
         }
 
-     
+
 
         /// <summary>
         /// 请求Json数据失败
@@ -119,7 +119,7 @@ namespace MatrixFirmwareUpdater
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //说明网络请求没有问题
-            if (buildmeta != null) {
+            if (matrixFW != null) {
                 mw.StatusToUserControl(Status.Ready);
             }
         }

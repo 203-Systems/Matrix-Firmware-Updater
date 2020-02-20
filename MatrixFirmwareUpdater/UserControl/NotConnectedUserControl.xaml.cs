@@ -29,7 +29,7 @@ namespace MatrixFirmwareUpdater
 
             _tbDeviceName = tbDeviceName;
             _tbNowVersionName = tbNowVersionName;
-            UpdateMatrix();
+            //UpdateMatrix();
         }
     }
 }

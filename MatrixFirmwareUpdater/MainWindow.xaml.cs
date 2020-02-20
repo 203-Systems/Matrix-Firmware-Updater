@@ -64,16 +64,16 @@ namespace MatrixFirmwareUpdater
 
         private void doThread()
         {
-            Matrix = getDeviceInfo();
+            matrix = getDeviceInfo();
    
-            if (Matrix == null)
-            {
+            //if (Matrix == null)
+            //{
 
-            }
-            else
-            {
-                StatusToUserControl(Status.Connected);
-            }
+            //}
+            //else
+            //{
+            //    StatusToUserControl(Status.Connected);
+            //}
 
             ChangeWindowMessageFilter(WM_COPYDATA, 1);
         }

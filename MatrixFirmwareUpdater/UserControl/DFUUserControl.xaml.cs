@@ -49,12 +49,12 @@ namespace MatrixFirmwareUpdater
         private String filePath;
         public void ToDownload()
         {
-            if (fw_link == null || fw_link.Equals(String.Empty))
+            if (matrixFW.File_URL == null || matrixFW.File_URL.Equals(String.Empty))
             {
                 return;
             }
 
-            string url = fw_link;
+            string url = matrixFW.File_URL;
             try
             {
                 WebClient webClient = new WebClient();

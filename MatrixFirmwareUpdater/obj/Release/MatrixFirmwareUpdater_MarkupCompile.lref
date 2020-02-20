@@ -1,6 +1,9 @@
-﻿E:\Sharer\MatrixFirmwareUpdater\MatrixFirmwareUpdater\obj\Release\GeneratedInternalTypeHelper.g.cs
+﻿
 
-FE:\Sharer\MatrixFirmwareUpdater\MatrixFirmwareUpdater\OnNotConnectedUserControl.xaml;;
-FE:\Sharer\MatrixFirmwareUpdater\MatrixFirmwareUpdater\OpenWindow.xaml;;
-FE:\Sharer\MatrixFirmwareUpdater\MatrixFirmwareUpdater\MainWindow.xaml;;
+FC:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\UserControl\ConnectedUserControl.xaml;;
+FC:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\UserControl\DFUUserControl.xaml;;
+FC:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\UserControl\ReadyUserControl.xaml;;
+FC:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\UserControl\NotConnectedUserControl.xaml;;
+FC:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\OpenWindow.xaml;;
+FC:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\MainWindow.xaml;;
 
