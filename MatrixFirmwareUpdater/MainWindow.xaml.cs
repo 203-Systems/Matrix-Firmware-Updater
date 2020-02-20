@@ -26,15 +26,24 @@ namespace MatrixFirmwareUpdater
         {
             InitializeComponent();
 
-            StatusToUserControl(Status.NotConnected);
+            updateMatrixInfo();
+
+
         }
 
 
-        private MatrixInfo getDeviceInfo()
+        private void updateMatrixInfo()
         {
             ManagementObjectCollection collection;
             using (var searcher = new ManagementObjectSearcher(@"Select * From Win32_PnPEntity"))
                 collection = searcher.Get();
+
+            matrix = new MatrixInfo(
+                            null,
+                            null,
+                            null,
+                            null,
+                            "NotConnected");
 
             foreach (var device in collection)
             {
@@ -42,15 +51,17 @@ namespace MatrixFirmwareUpdater
                 {
                     if (device.GetPropertyValue("DeviceID").ToString().Contains(@"PID_0003"))
                     {
-                        return new MatrixInfo(
+                        matrix = new MatrixInfo(
+                            device.GetPropertyValue("Name").ToString(),
                             "Matrix DFU",
                             "未知",
                             "未知",
                             "DFU");
                     }
-                    else
+                    else if (device.GetPropertyValue("PNPClass").ToString().Equals("MEDIA"))
                     {
-                        return new MatrixInfo(
+                        matrix = new MatrixInfo(
+                        device.GetPropertyValue("Name").ToString(),
                         "Matrix",
                         "未知",
                         "未知",
@@ -59,13 +70,18 @@ namespace MatrixFirmwareUpdater
                 }
 
             }
-            return null;
+
+            this.Dispatcher.Invoke(() =>
+            {
+                UpdateUserControl();
+            });
         }
 
         private void doThread()
         {
-            matrix = getDeviceInfo();
-   
+            //updateMatrixInfo();
+            //UpdateUserControl();
+
             //if (Matrix == null)
             //{
 
@@ -101,14 +117,27 @@ namespace MatrixFirmwareUpdater
 
         IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
+            const int WM_DEVICECHANGE = 0x0219;
             if (msg == WM_COPYDATA)
             {
-                CopyDataStruct cds = (CopyDataStruct)System.Runtime.InteropServices.Marshal.PtrToStructure(lParam, typeof(CopyDataStruct));
-                //MessageBox.Show(cds.lpData);
-                GetOtherWindowsMsg(cds.lpData);
+
             }
+            switch(msg)
+            {
+                case WM_COPYDATA:
+                    CopyDataStruct cds = (CopyDataStruct)System.Runtime.InteropServices.Marshal.PtrToStructure(lParam, typeof(CopyDataStruct));
+                    //MessageBox.Show(cds.lpData);
+                    GetOtherWindowsMsg(cds.lpData);
+                    break;
+                case 0x0219:
+
+                    updateMatrixInfo();
+                    break;
+            }
+
             return hwnd;
         }
+            
 
         protected override void OnSourceInitialized(EventArgs e)
         {
@@ -187,7 +216,8 @@ namespace MatrixFirmwareUpdater
             if (msg.Equals("HELLO")) {
                 //Close();//关闭窗体，具体执行什么操作，可自行更改
                 //恢复连接状态
-                StatusToUserControl(Status.Connected);
+                //tatusToUserControl(Status.Connected);
+                //updateMatrixInfo();
             }
         }
 
@@ -198,20 +228,20 @@ namespace MatrixFirmwareUpdater
             DFU = 3,
         }
 
-        public void StatusToUserControl(Status status) {
+        public void UpdateUserControl() {
             gMain.Children.Clear();
-            switch (status)
+            switch (matrix.Status)
             {
-                case Status.NotConnected:
+                case "NotConnected":
                     gMain.Children.Add(new NotConnectedUserControl(this));
                     break;
-                case Status.Connected:
+                case "Connected":
                     gMain.Children.Add(new ConnectedUserControl(this));
                     break;
-                case Status.Ready:
+                case "Ready":
                     gMain.Children.Add(new ReadyUserControl(this));
                     break;
-                case Status.DFU:
+                case "DFU":
                     gMain.Children.Add(new DFUUserControl(this));
                     break;
                 default:

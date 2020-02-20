@@ -40,8 +40,9 @@ namespace MatrixFirmwareUpdater
 
         private bool pullLatestFirmware()
         {
-            bool beta = false;
-            const string URL = "https://api.github.com/repos/203Industries/Matrix/releases";
+            bool beta = true;
+            //onst string URL = "https://api.github.com/repos/203Industries/Matrix/releases";
+            const string URL = "C:\\Users\\caine\\Documents\\demoGithubApi.txt";
             using (var webClient = new System.Net.WebClient())
             {
                 try
@@ -62,16 +63,27 @@ namespace MatrixFirmwareUpdater
                             String release_type = "Release";
                             if (release.prerelease)
                                 release_type = "PreRelease";
-
                             matrixFW.Version = release.name;
                             matrixFW.Build_type = release_type;
+                            //System.Windows.Forms.MessageBox.Show(release.published_at);
                             matrixFW.Publish_time = release.published_at;
 
                             String body = Regex.Escape(release.body);
-                            matrixFW.Patchnote_zh_CN = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ patchnote_zh_CN\\ -->\\r\\n)(.*?)(?=</details>)").Value);
-                            matrixFW.Patchnote_en = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ patchnote_en\\ -->\\r\\n)(.*?)(?=</details>)").Value);
-                            matrixFW.Supported_devices = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ supported_devices\\ -->\\r\\n)(.*?)(?=</details>)").Value).Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                            matrixFW.File_URL = release.assets[0].browser_download_url;
+                            string patchnote_zh_CN = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ patchnote_zh_CN\\ -->\\r\\n)(.*?)(?=</details>)").Value);
+                            string patchnote_en = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ patchnote_en\\ -->\\r\\n)(.*?)(?=</details>)").Value);
+                            IList<string> supported_devices = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ supported_devices\\ -->\\r\\n)(.*?)(?=</details>)").Value).Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                            string file_URL = release.assets[0].browser_download_url;
+
+                            matrixFW = new MatrixFWMeta
+                            (
+                                release.name,
+                                release_type,
+                                release.published_at,
+                                supported_devices,
+                                patchnote_en,
+                                patchnote_zh_CN,
+                                file_URL
+                        );
                             return true;
                         }
                     }
@@ -120,7 +132,7 @@ namespace MatrixFirmwareUpdater
         {
             //说明网络请求没有问题
             if (matrixFW != null) {
-                mw.StatusToUserControl(Status.Ready);
+                //mw.StatusToUserControl(Status.Ready);
             }
         }
 

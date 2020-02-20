@@ -47,12 +47,12 @@ namespace MatrixFirmwareUpdater
 
         private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            mw.StatusToUserControl(Status.Connected);
+            //mw.StatusToUserControl(Status.Connected);
         }
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            mw.StatusToUserControl(Status.DFU);
+            //mw.StatusToUserControl(Status.DFU);
         }
 
       
