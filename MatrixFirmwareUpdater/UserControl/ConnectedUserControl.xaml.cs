@@ -63,11 +63,6 @@ namespace MatrixFirmwareUpdater
                             String release_type = "Release";
                             if (release.prerelease)
                                 release_type = "PreRelease";
-                            matrixFW.Version = release.name;
-                            matrixFW.Build_type = release_type;
-                            //System.Windows.Forms.MessageBox.Show(release.published_at);
-                            matrixFW.Publish_time = release.published_at;
-
                             String body = Regex.Escape(release.body);
                             string patchnote_zh_CN = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ patchnote_zh_CN\\ -->\\r\\n)(.*?)(?=</details>)").Value);
                             string patchnote_en = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ patchnote_en\\ -->\\r\\n)(.*?)(?=</details>)").Value);

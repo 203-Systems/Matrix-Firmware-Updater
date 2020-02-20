@@ -33,48 +33,46 @@ namespace MatrixFirmwareUpdater
 
 
         private void updateMatrixInfo()
-        {
-            ManagementObjectCollection collection;
-            using (var searcher = new ManagementObjectSearcher(@"Select * From Win32_PnPEntity"))
-                collection = searcher.Get();
-
-            matrix = new MatrixInfo(
-                            null,
-                            null,
-                            null,
-                            null,
-                            "NotConnected");
-
-            foreach (var device in collection)
+        { 
+                matrix = new MatrixInfo(null, null, null, null, "NotConnected");
+            try
             {
-                if (device.GetPropertyValue("DeviceID").ToString().Contains(@"VID_0203"))
+                var searcher = new ManagementObjectSearcher(@"Select * From Win32_PnPEntity");
+                foreach (var device in searcher.Get())
                 {
-                    if (device.GetPropertyValue("DeviceID").ToString().Contains(@"PID_0003"))
+                    if (device.GetPropertyValue("DeviceID").ToString().Contains(@"VID_0203"))
                     {
-                        matrix = new MatrixInfo(
+                        if (device.GetPropertyValue("DeviceID").ToString().Contains(@"PID_0003"))
+                        {
+                            matrix = new MatrixInfo(
+                                device.GetPropertyValue("Name").ToString(),
+                                "Matrix DFU",
+                                "未知",
+                                "未知",
+                                "DFU");
+                        }
+                        else if (device.GetPropertyValue("PNPClass").ToString().Equals("MEDIA"))
+                        {
+                            matrix = new MatrixInfo(
                             device.GetPropertyValue("Name").ToString(),
-                            "Matrix DFU",
+                            "Matrix",
                             "未知",
                             "未知",
-                            "DFU");
-                    }
-                    else if (device.GetPropertyValue("PNPClass").ToString().Equals("MEDIA"))
-                    {
-                        matrix = new MatrixInfo(
-                        device.GetPropertyValue("Name").ToString(),
-                        "Matrix",
-                        "未知",
-                        "未知",
-                        "Connected");
+                            "Connected");
+                        }
                     }
                 }
-
+            }
+            catch(Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show(e.Message);
             }
 
-            this.Dispatcher.Invoke(() =>
-            {
-                UpdateUserControl();
-            });
+                this.Dispatcher.Invoke(() =>
+                {
+                    UpdateUserControl();
+                });
+
         }
 
         private void doThread()
@@ -122,7 +120,7 @@ namespace MatrixFirmwareUpdater
             {
 
             }
-            switch(msg)
+            switch (msg)
             {
                 case WM_COPYDATA:
                     CopyDataStruct cds = (CopyDataStruct)System.Runtime.InteropServices.Marshal.PtrToStructure(lParam, typeof(CopyDataStruct));
@@ -137,7 +135,7 @@ namespace MatrixFirmwareUpdater
 
             return hwnd;
         }
-            
+
 
         protected override void OnSourceInitialized(EventArgs e)
         {
@@ -188,10 +186,11 @@ namespace MatrixFirmwareUpdater
         {
             tbHint.Text = "松开鼠标即可刷入固件";
             gDrop.Visibility = Visibility.Collapsed;
-            string fileName =((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+            string fileName = ((System.Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
 
             //获得文件名后的操作...
-            if (fileName.EndsWith(".mxfw")) {
+            if (fileName.EndsWith(".mxfw"))
+            {
                 //确认是固件文件
                 //更新操作
                 ToUpdate(fileName);
@@ -213,7 +212,8 @@ namespace MatrixFirmwareUpdater
         /// <param name="msg"></param>
         private void GetOtherWindowsMsg(String msg)
         {
-            if (msg.Equals("HELLO")) {
+            if (msg.Equals("HELLO"))
+            {
                 //Close();//关闭窗体，具体执行什么操作，可自行更改
                 //恢复连接状态
                 //tatusToUserControl(Status.Connected);
@@ -221,14 +221,16 @@ namespace MatrixFirmwareUpdater
             }
         }
 
-        public enum Status {
+        public enum Status
+        {
             NotConnected = 0,
             Connected = 1,
             Ready = 2,
             DFU = 3,
         }
 
-        public void UpdateUserControl() {
+        public void UpdateUserControl()
+        {
             gMain.Children.Clear();
             switch (matrix.Status)
             {
