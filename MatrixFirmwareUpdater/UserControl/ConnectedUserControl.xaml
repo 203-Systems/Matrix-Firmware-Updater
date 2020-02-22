@@ -14,7 +14,7 @@
                 <TextBlock Name="tbVersion" FontSize="25" Text="加载中" Margin="0,20,0,0"/>
             </StackPanel>
             <StackPanel>
-                <TextBlock FontSize="25" Text="更新内容：" Margin="0,15,0,0"/>
+                <TextBlock FontSize="25" Text="更新内容：" HorizontalAlignment="Left"/>
             </StackPanel>
             <ScrollViewer Width="500" Height="160" Margin="-444,15,0,0">
                 <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
