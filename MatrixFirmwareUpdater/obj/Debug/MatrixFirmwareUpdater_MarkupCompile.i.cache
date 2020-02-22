@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-E:\Sharer\MatrixFirmwareUpdater\MatrixFirmwareUpdater\obj\Debug\
+E:\Sharer\Matrix-Firmware-Updater-master\MatrixFirmwareUpdater\obj\Debug\
 MatrixFirmwareUpdater
 none
 false
 DEBUG;TRACE
-E:\Sharer\MatrixFirmwareUpdater\MatrixFirmwareUpdater\App.xaml
+E:\Sharer\Matrix-Firmware-Updater-master\MatrixFirmwareUpdater\App.xaml
 61168148422
 
 16-2117577872
-17927143920
+17-756437305
 UserControl\ConnectedUserControl.xaml;UserControl\DFUUserControl.xaml;UserControl\ReadyUserControl.xaml;UserControl\NotConnectedUserControl.xaml;OpenWindow.xaml;MainWindow.xaml;
 
 True

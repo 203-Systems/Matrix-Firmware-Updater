@@ -135,23 +135,5 @@ namespace MatrixFirmwareUpdater.Data
             public string Patchnote_zh_CN { get; set; }
             public string File_URL { get; set; }
         }
-
-        public static void SetMatrixFWMetaData(TextBlock tbVersion, TextBlock tbPatchnote)
-        {
-            Application.Current.Dispatcher.Invoke(delegate ()
-            {
-            //要更新的UI代码
-            try
-                {
-                    tbVersion.Text = matrixFW.Version;
-                    tbPatchnote.Text = matrixFW.Patchnote_zh_CN;
-                }
-                catch (Exception)
-                {
-
-                }
-            });
-        }
     }
-
 }

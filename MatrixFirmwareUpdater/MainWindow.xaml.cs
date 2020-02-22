@@ -27,14 +27,13 @@ namespace MatrixFirmwareUpdater
             InitializeComponent();
 
             updateMatrixInfo();
-
-
+            ChangeWindowMessageFilter(WM_COPYDATA, 1);
         }
 
 
         private void updateMatrixInfo()
         { 
-                matrix = new MatrixInfo(null, null, null, null, "NotConnected");
+            matrix = new MatrixInfo(null, null, null, null, "NotConnected");
             try
             {
                 var searcher = new ManagementObjectSearcher(@"Select * From Win32_PnPEntity");
@@ -77,7 +76,7 @@ namespace MatrixFirmwareUpdater
 
         private void doThread()
         {
-            //updateMatrixInfo();
+            updateMatrixInfo();
             //UpdateUserControl();
 
             //if (Matrix == null)
@@ -88,8 +87,6 @@ namespace MatrixFirmwareUpdater
             //{
             //    StatusToUserControl(Status.Connected);
             //}
-
-            ChangeWindowMessageFilter(WM_COPYDATA, 1);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -128,8 +125,9 @@ namespace MatrixFirmwareUpdater
                     GetOtherWindowsMsg(cds.lpData);
                     break;
                 case 0x0219:
-
-                    updateMatrixInfo();
+                    Thread thread = new Thread(doThread);
+                    thread.Start();
+                    //updateMatrixInfo();
                     break;
             }
 

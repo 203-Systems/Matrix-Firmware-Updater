@@ -35,12 +35,13 @@ namespace MatrixFirmwareUpdater
             _tbNowVersionName = tbNowVersionName;
             UpdateMatrix();
 
-            pullLatestFirmware();
+            if (pullLatestFirmware())
+                SetMatrixFWMetaData();
         }
 
         private bool pullLatestFirmware()
         {
-            bool beta = true;
+            bool beta = false;
             //onst string URL = "https://api.github.com/repos/203Industries/Matrix/releases";
             const string URL = "C:\\Users\\caine\\Documents\\demoGithubApi.txt";
             using (var webClient = new System.Net.WebClient())
@@ -95,13 +96,29 @@ namespace MatrixFirmwareUpdater
             return false;
         }
 
+        private void SetMatrixFWMetaData()
+        {
+            Application.Current.Dispatcher.Invoke(delegate ()
+            {
+                //要更新的UI代码
+                try
+                {
+                    tbVersion.Text = matrixFW.Version;
+                    tbPatchnote.Text = matrixFW.Patchnote_zh_CN;
+                }
+                catch (Exception)
+                {
+
+                }
+            });
+        }
 
 
-        /// <summary>
-        /// 请求Json数据失败
-        /// </summary>
-        /// <param name="msg"></param>
-        private void FailGetJson()
+    /// <summary>
+    /// 请求Json数据失败
+    /// </summary>
+    /// <param name="msg"></param>
+    private void FailGetJson()
         {
             Application.Current.Dispatcher.Invoke(delegate ()
             {
