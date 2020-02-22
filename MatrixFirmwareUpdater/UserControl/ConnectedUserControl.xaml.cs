@@ -41,7 +41,7 @@ namespace MatrixFirmwareUpdater
 
         private bool pullLatestFirmware()
         {
-            bool beta = false;
+            bool beta = true;
             //onst string URL = "https://api.github.com/repos/203Industries/Matrix/releases";
             const string URL = "C:\\Users\\caine\\Documents\\demoGithubApi.txt";
             using (var webClient = new System.Net.WebClient())
