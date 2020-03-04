@@ -174,6 +174,19 @@ namespace MatrixFirmwareUpdater
         }
     }
 
+    public bool matrixNeedUpdate()
+        {
+            if (matrixFW.Version_byte[0] > matrix.Version_byte[0])
+                return true;
+            if (matrixFW.Version_byte[1] > matrix.Version_byte[1])
+                return true;
+            if (matrixFW.Version_byte[2] > matrix.Version_byte[2])
+                return true;
+            if (matrixFW.Version_byte[3] > matrix.Version_byte[3])
+                return true;
+            return false;
+        }
+
     private void doThread()
         {
             updateMatrixInfo();
