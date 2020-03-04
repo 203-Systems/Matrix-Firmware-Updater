@@ -12,8 +12,11 @@ using System.Windows.Threading;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using Midi;
 using MatrixFirmwareUpdater.Data;
+
 using static MatrixFirmwareUpdater.Data.StaticData;
+using System.Linq;
 
 namespace MatrixFirmwareUpdater
 {
@@ -33,7 +36,7 @@ namespace MatrixFirmwareUpdater
 
         private void updateMatrixInfo()
         { 
-            matrix = new MatrixInfo(null, null, null, null, "NotConnected");
+            matrix = new MatrixInfo(null, null, null, null, null, "NotConnected");
             try
             {
                 var searcher = new ManagementObjectSearcher(@"Select * From Win32_PnPEntity");
@@ -46,9 +49,11 @@ namespace MatrixFirmwareUpdater
                             matrix = new MatrixInfo(
                                 device.GetPropertyValue("Name").ToString(),
                                 "Matrix DFU",
-                                "未知",
-                                "未知",
+                                "不可用",
+                                null,
+                                "不可用",
                                 "DFU");
+                            break;
                         }
                         else if (device.GetPropertyValue("PNPClass").ToString().Equals("MEDIA"))
                         {
@@ -56,8 +61,11 @@ namespace MatrixFirmwareUpdater
                             device.GetPropertyValue("Name").ToString(),
                             "Matrix",
                             "未知",
+                            null,
                             "未知",
                             "Connected");
+                            requestMatrixInfo();
+                            break;
                         }
                     }
                 }
@@ -74,7 +82,99 @@ namespace MatrixFirmwareUpdater
 
         }
 
-        private void doThread()
+        public Midi.InputDevice matrixIn; // Yeet Input in
+        public Midi.OutputDevice matrixOut; // Yeet Output in
+
+        private void requestMatrixInfo()
+        {
+            //Setup Midi
+            Console.WriteLine("Looking for Midi input device " + matrix.Name);
+            int i = 0;
+            foreach (Midi.InputDevice inputDevice in Midi.InputDevice.InstalledDevices)
+            {
+                Console.WriteLine(inputDevice.Name);
+                if (inputDevice.Name == matrix.Name)
+                {
+                    Console.WriteLine("Midi Input Connected: " + inputDevice.Name);
+                    matrixIn = Midi.InputDevice.InstalledDevices[i];
+                    matrixIn.Open();
+                    matrixIn.SysEx += new Midi.InputDevice.SysExHandler(ReceiveSysEx);
+                    matrixIn.StartReceiving(null, true);
+                    break;
+                }
+                i++;
+            }
+
+            Console.WriteLine("Looking for Midi output device " + matrix.Name);
+
+            i = 0;
+            foreach (Midi.OutputDevice outputDevice in Midi.OutputDevice.InstalledDevices)
+            {
+                Console.WriteLine(outputDevice.Name);
+                if (outputDevice.Name == matrix.Name)
+                {
+                    Console.WriteLine("Midi Output Connected: " + outputDevice.Name);
+                    matrixOut = Midi.OutputDevice.InstalledDevices[i];
+                    matrixOut.Open();
+                    break;
+                }
+                i++;
+            }
+
+            matrixOut.SendSysEx(new byte[] { 240, 0, 2, 3, 1, 0, 17, 16, 247 }); //获取设备名字
+            matrixOut.SendSysEx(new byte[] { 240, 0, 2, 3, 1, 0, 17, 17, 247 }); //获取设备序列号String
+            matrixOut.SendSysEx(new byte[] { 240, 0, 2, 3, 1, 0, 17, 18, 0, 247 }); //获取设备固件String
+            matrixOut.SendSysEx(new byte[] { 240, 0, 2, 3, 1, 0, 17, 18, 1, 247 }); //获取设备固件Bytes
+        }
+    private void ReceiveSysEx(SysExMessage msg)
+    {
+        byte[] rawData = new byte[msg.Data.Length - 2];
+        Array.Copy(msg.Data, 1, rawData, 0, msg.Data.Length - 2); //去掉开头和结尾
+        StringBuilder hex = new StringBuilder(rawData.Length * 2);
+        foreach (byte b in rawData)
+            hex.AppendFormat("{0:x2}", b);
+        Console.Write("Sysex Recived ");
+        Console.WriteLine(hex);
+            if (new ArraySegment<byte>(rawData, 0, 5).SequenceEqual(new byte[] {0x00, 0x02, 0x03, 0x01, 0x00})) //确认下确实是Matrix发来的Sysex
+        {
+                if (rawData[5] == 0x12) //写 
+            {
+                var data = rawData.Skip(7).ToArray();
+                switch (rawData[6])
+                {
+                    case 16:
+                        matrix.DeviceName = Encoding.ASCII.GetString(data);
+                        Console.WriteLine("Device Name: " + matrix.DeviceName);
+                        break;
+                    case 17:
+                        matrix.Serial_number = Encoding.ASCII.GetString(data);
+                        Console.WriteLine("Device Serial Number: " + matrix.Serial_number);
+                            break;
+                    case 18:
+                        if(data[0] == 0)
+                            {
+                                matrix.FW_version = Encoding.ASCII.GetString(data.Skip(1).ToArray());
+                                Console.WriteLine("Device FW Version: " + matrix.FW_version);
+                            }
+                        else if(data[0] == 1)
+                            {
+                                matrix.Version_byte = Array.ConvertAll(data.Skip(1).ToArray(), Convert.ToInt32);
+                                Console.WriteLine("Device FW bytes: {0}.{1}.{2}.{3} ", matrix.Version_byte[0], matrix.Version_byte[1], matrix.Version_byte[2], matrix.Version_byte[3]);
+                            }
+                        break;
+
+                }
+            }
+            else if(rawData[5] == 0x11) //读 不过我也不知道为什么要从电脑读数据。。。先加上吧
+            {
+
+            }
+
+                //BaseUserControl::updateMatrix();
+        }
+    }
+
+    private void doThread()
         {
             updateMatrixInfo();
             //UpdateUserControl();

@@ -95,17 +95,19 @@ namespace MatrixFirmwareUpdater.Data
     {
         public class MatrixInfo
         {
-            public MatrixInfo(string name, string device_name, string FW_Version, string Serial_number, string status)
+            public MatrixInfo(string name, string device_name, string FW_version, int[] version_byte, string Serial_number, string status)
             {
                 this.Name = name;
                 this.DeviceName = device_name;
-                this.FW_Version = FW_Version;
-                this.Serial_number = FW_Version;
+                this.FW_version = FW_version;
+                this.Version_byte = version_byte;
+                this.Serial_number = FW_version;
                 this.Status = status;
             }
             public string Name { get; set; }
             public string DeviceName { get; set; }
-            public string FW_Version { get; set; }
+            public string FW_version { get; set; }
+            public int[] Version_byte { get; set; }
             public string Serial_number { get; set; }
             public string Status { get; set; }
         }
@@ -117,9 +119,10 @@ namespace MatrixFirmwareUpdater.Data
         public bool sysex_replied;
         public class MatrixFWMeta
         {
-            public MatrixFWMeta(string version, string build_type, DateTime publish_time, IList<string> supported_devices, string patchnote_en, string patchnote_zh_CN, string file_URL)
+            public MatrixFWMeta(string version, int[] version_byte, string build_type, DateTime publish_time, IList<string> supported_devices, string patchnote_en, string patchnote_zh_CN, string file_URL)
             {
                 this.Version = version;
+                this.Version_byte = version_byte;
                 this.Build_type = build_type;
                 this.Publish_time = publish_time;
                 this.Supported_devices = supported_devices;
@@ -128,6 +131,7 @@ namespace MatrixFirmwareUpdater.Data
                 this.File_URL = file_URL;
             }
             public string Version { get; set; }
+            public int[] Version_byte { get; set; }
             public string Build_type { get; set; }
             public DateTime Publish_time { get; set; }
             public IList<string> Supported_devices { get; set; }

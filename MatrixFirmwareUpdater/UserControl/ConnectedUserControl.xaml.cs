@@ -33,16 +33,17 @@ namespace MatrixFirmwareUpdater
 
             _tbDeviceName = tbDeviceName;
             _tbNowVersionName = tbNowVersionName;
-            UpdateMatrix();
 
             if (pullLatestFirmware())
                 SetMatrixFWMetaData();
+
+            UpdateMatrix();
         }
 
         private bool pullLatestFirmware()
         {
             bool beta = true;
-            //onst string URL = "https://api.github.com/repos/203Industries/Matrix/releases";
+            //const string URL = "https://api.github.com/repos/203Industries/Matrix/releases";
             const string URL = "C:\\Users\\caine\\Documents\\demoGithubApi.txt";
             using (var webClient = new System.Net.WebClient())
             {
@@ -59,12 +60,11 @@ namespace MatrixFirmwareUpdater
                     {
                         if (!release.prerelease || beta)
                         {
-                            //MatrixFWMeta matrixFW = new 
-                            //matrixFW.version = release.name;
+                            String body = Regex.Escape(release.body);
+                            int[] version_byte = Array.ConvertAll(Regex.Unescape(Regex.Match(body, @"(?<=Version\\ byte:\\ )(.*?)(?=-->\\r\\n)").Value).Split('.'), int.Parse);
                             String release_type = "Release";
                             if (release.prerelease)
                                 release_type = "PreRelease";
-                            String body = Regex.Escape(release.body);
                             string patchnote_zh_CN = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ patchnote_zh_CN\\ -->\\r\\n)(.*?)(?=</details>)").Value);
                             string patchnote_en = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ patchnote_en\\ -->\\r\\n)(.*?)(?=</details>)").Value);
                             IList<string> supported_devices = Regex.Unescape(Regex.Match(body, @"(?<=<!--\\ supported_devices\\ -->\\r\\n)(.*?)(?=</details>)").Value).Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
@@ -73,6 +73,7 @@ namespace MatrixFirmwareUpdater
                             matrixFW = new MatrixFWMeta
                             (
                                 release.name,
+                                version_byte,
                                 release_type,
                                 release.published_at,
                                 supported_devices,

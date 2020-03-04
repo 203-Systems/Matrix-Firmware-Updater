@@ -37,7 +37,7 @@ namespace MatrixFirmwareUpdater
                 if (_tbDeviceName != null && _tbNowVersionName != null)
                 {
                     _tbDeviceName.Text = StaticData.matrix.Name;
-                    _tbNowVersionName.Text = StaticData.matrix.FW_Version;
+                    _tbNowVersionName.Text = StaticData.matrix.FW_version;
                 }
             });
         }

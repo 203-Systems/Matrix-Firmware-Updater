@@ -47,3 +47,4 @@ C:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\ob
 C:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\obj\Debug\MatrixFirmwareUpdater.csproj.CopyComplete
 C:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\obj\Debug\MatrixFirmwareUpdater.exe
 C:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\obj\Debug\MatrixFirmwareUpdater.pdb
+C:\Users\caine\Documents\GitHub\Matrix-Firmware-Updater\MatrixFirmwareUpdater\bin\Debug\Midi.dll
