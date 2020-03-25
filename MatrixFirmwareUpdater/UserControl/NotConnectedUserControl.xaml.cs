@@ -25,11 +25,6 @@ namespace MatrixFirmwareUpdater
             InitializeComponent();
 
             ImageName = "Not Connected.png";
-            image = iRight;
-
-            _tbDeviceName = tbDeviceName;
-            _tbNowVersionName = tbNowVersionName;
-            //UpdateMatrix();
         }
     }
 }

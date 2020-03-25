@@ -36,12 +36,6 @@ namespace MatrixFirmwareUpdater
             InitializeComponent();
 
             ImageName = "ready.png";
-            image = iRight;
-
-            _tbDeviceName = tbDeviceName;
-            _tbNowVersionName = tbNowVersionName;
-            UpdateMatrix();
-
             //SetMatrixFWMetaData();
         }
 

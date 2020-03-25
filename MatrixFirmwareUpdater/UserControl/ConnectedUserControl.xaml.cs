@@ -29,15 +29,11 @@ namespace MatrixFirmwareUpdater
             InitializeComponent();
 
             ImageName = "Ready.png";
-            image = iRight;
-
-            _tbDeviceName = tbDeviceName;
-            _tbNowVersionName = tbNowVersionName;
+          
 
             if (pullLatestFirmware())
                 SetMatrixFWMetaData();
 
-            UpdateMatrix();
         }
 
         private bool pullLatestFirmware()

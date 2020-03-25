@@ -36,11 +36,6 @@ namespace MatrixFirmwareUpdater
             InitializeComponent();
 
             ImageName = "DFU.png";
-            image = iRight;
-
-            _tbDeviceName = tbDeviceName;
-            _tbNowVersionName = tbNowVersionName;
-            UpdateMatrix();
 
             AllowDrop = false;
             ToDownload();

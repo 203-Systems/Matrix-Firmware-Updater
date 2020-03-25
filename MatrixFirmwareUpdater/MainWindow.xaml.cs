@@ -35,7 +35,7 @@ namespace MatrixFirmwareUpdater
 
 
         private void updateMatrixInfo()
-        { 
+        {
             matrix = new MatrixInfo(null, null, null, null, null, "NotConnected");
             try
             {
@@ -69,17 +69,16 @@ namespace MatrixFirmwareUpdater
                         }
                     }
                 }
-            }
-            catch(Exception e)
-            {
-                System.Windows.Forms.MessageBox.Show(e.Message);
-            }
 
                 this.Dispatcher.Invoke(() =>
                 {
                     UpdateUserControl();
                 });
+            }
+            catch (Exception e)
+            {
 
+            }
         }
 
         public Midi.InputDevice matrixIn; // Yeet Input in
@@ -97,9 +96,12 @@ namespace MatrixFirmwareUpdater
                 {
                     Console.WriteLine("Midi Input Connected: " + inputDevice.Name);
                     matrixIn = Midi.InputDevice.InstalledDevices[i];
-                    matrixIn.Open();
-                    matrixIn.SysEx += new Midi.InputDevice.SysExHandler(ReceiveSysEx);
-                    matrixIn.StartReceiving(null, true);
+                    if (!matrixIn.IsOpen)
+                    {
+                        matrixIn.Open();
+                        matrixIn.SysEx += new Midi.InputDevice.SysExHandler(ReceiveSysEx);
+                        matrixIn.StartReceiving(null, true);
+                    }
                     break;
                 }
                 i++;
@@ -115,7 +117,8 @@ namespace MatrixFirmwareUpdater
                 {
                     Console.WriteLine("Midi Output Connected: " + outputDevice.Name);
                     matrixOut = Midi.OutputDevice.InstalledDevices[i];
-                    matrixOut.Open();
+                    if (!matrixOut.IsOpen)
+                        matrixOut.Open();
                     break;
                 }
                 i++;
@@ -144,7 +147,13 @@ namespace MatrixFirmwareUpdater
                 {
                     case 16:
                         matrix.DeviceName = Encoding.ASCII.GetString(data);
-                        Console.WriteLine("Device Name: " + matrix.DeviceName);
+                        new Thread(() => {
+                            this.Dispatcher.Invoke(new Action(() =>
+                            {
+                                tbDeviceName.Text = matrix.DeviceName;
+                            }));
+                        }).Start();
+                            Console.WriteLine("Device Name: " + matrix.DeviceName);
                         break;
                     case 17:
                         matrix.Serial_number = Encoding.ASCII.GetString(data);
@@ -153,7 +162,13 @@ namespace MatrixFirmwareUpdater
                     case 18:
                         if(data[0] == 0)
                             {
-                                matrix.FW_version = Encoding.ASCII.GetString(data.Skip(1).ToArray());
+                                matrix.FW_version = "Matrix OS " + Encoding.ASCII.GetString(data.Skip(1).ToArray());
+                                new Thread(() => {
+                                    this.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        tbNowVersionName.Text = matrix.FW_version;
+                                    }));
+                                }).Start();
                                 Console.WriteLine("Device FW Version: " + matrix.FW_version);
                             }
                         else if(data[0] == 1)
@@ -240,6 +255,7 @@ namespace MatrixFirmwareUpdater
                 case 0x0219:
                     Thread thread = new Thread(doThread);
                     thread.Start();
+                    Console.WriteLine("DEVICE CHANGED CALLED");
                     //updateMatrixInfo();
                     break;
             }
@@ -360,6 +376,24 @@ namespace MatrixFirmwareUpdater
                 default:
                     break;
             }
+            UpdateMatrix(((BaseUserControl)gMain.Children[gMain.Children.Count -1]).ImageName);
+        }
+
+        protected void UpdateMatrix(String ImageName)
+        {
+            if (!ImageName.Equals(String.Empty) && iRight != null)
+            {
+                iRight.Source = new BitmapImage(new Uri("pack://application:,,,/Images/" + ImageName));
+            }
+
+            Application.Current.Dispatcher.Invoke(delegate ()
+            {
+                if (tbDeviceName != null && tbNowVersionName != null)
+                {
+                    tbDeviceName.Text = StaticData.matrix.Name;
+                    tbNowVersionName.Text = StaticData.matrix.FW_version;
+                }
+            });
         }
     }
 }

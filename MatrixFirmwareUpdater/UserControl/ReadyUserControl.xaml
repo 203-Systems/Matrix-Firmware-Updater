@@ -27,16 +27,5 @@
                 <TextBlock FontSize="18" Text="返回" VerticalAlignment="Bottom"  TextDecorations="Underline" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown"/>
             </StackPanel>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Right" Margin="0,0,85,0" VerticalAlignment="Center">
-            <Image Width="320" Name="iRight"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock FontSize="20" Text="已连接：" Margin="20,30,0,0"/>
-                <TextBlock Name="tbDeviceName" FontSize="20" Text="加载中" Margin="40,30,0,0"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock FontSize="20" Text="固件版本：" Margin="20,20,0,0"/>
-                <TextBlock Name="tbNowVersionName" FontSize="20" Text="加载中" Margin="20,20,0,0"/>
-            </StackPanel>
-        </StackPanel>
     </Grid>
 </local:BaseUserControl>
